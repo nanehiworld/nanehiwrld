@@ -2,15 +2,27 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <title>Interaktive Webseite</title>
+    <title>Rechenhilfe</title>
 </head>
 <body>
-    <h1 id="headline">Klick auf den Button!</h1>
-    <button onclick="textÄndern()">Klick mich!</button>
+    <h1>Welche Zahl brauchst du, um 42 zu bekommen?</h1>
+    <p>Gib eine Zahl ein:</p>
+    <input type="number" id="eingabeZahl">
+    <button onclick="berechneFaktor()">Berechnen</button>
+
+    <p id="ergebnis"></p>
 
     <script>
-        function textÄndern() {
-            document.getElementById("headline").innerText = "Du hast geklickt!";
+        function berechneFaktor() {
+            const eingabe = parseFloat(document.getElementById("eingabeZahl").value);
+            if (!isNaN(eingabe) && eingabe !== 0) {
+                const faktor = 42 / eingabe;
+                document.getElementById("ergebnis").innerText = 
+                    "Du musst mit " + faktor.toFixed(2) + " multiplizieren, um 42 zu erhalten.";
+            } else {
+                document.getElementById("ergebnis").innerText = 
+                    "Bitte gib eine gültige Zahl ein (nicht 0).";
+            }
         }
     </script>
 </body>
