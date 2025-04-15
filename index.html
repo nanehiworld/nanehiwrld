@@ -2,10 +2,16 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <title>Was geht Leute</title>
+    <title>Interaktive Webseite</title>
 </head>
 <body>
-    <h1>Was geht</h1>
-    <p>Erste Webseite am Start :D.</p>
+    <h1 id="headline">Klick auf den Button!</h1>
+    <button onclick="textÄndern()">Klick mich!</button>
+
+    <script>
+        function textÄndern() {
+            document.getElementById("headline").innerText = "Du hast geklickt!";
+        }
+    </script>
 </body>
 </html>
