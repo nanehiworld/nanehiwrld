@@ -1,40 +1,109 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Keks Klicker</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            margin-top: 50px;
-        }
-        button {
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
-        }
-        #counter {
-            margin-top: 20px;
-            font-size: 50px;
-            color: #333;
-            front-weight: bold; 
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>Rasenmäher Spiel</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    html, body {
+      height: 100%;
+      overflow: hidden;
+    }
+    #wiese {
+      background-color: #4caf50;
+      width: 100vw;
+      height: 100vh;
+      position: relative;
+    }
+    #canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+    #rasenmaeher {
+      width: 100px;
+      height: 100px;
+      position: absolute;
+      transform: translate(-50%, -50%) rotate(0deg);
+      transition: transform 0.1s linear;
+    }
+    #controls {
+      position: absolute;
+      bottom: 20px;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      padding: 0 50px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      background-color: #333;
+      color: white;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
-    <h1>Keks Klicker </h1>
-    <button onclick="incrementCounter()">Keks</button>
-    <div id="counter">Anzahl der Kekse: 0</div>
+  <div id="wiese">
+    <canvas id="canvas"></canvas>
+    <img id="rasenmaeher" src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/Lawn_mower_icon.svg/64px-Lawn_mower_icon.svg.png" alt="Rasenmäher">
+    <div id="controls">
+      <button onclick="drehen(-1)">Links</button>
+      <button onclick="starten()">Start</button>
+      <button onclick="drehen(1)">Rechts</button>
+    </div>
+  </div>
 
-    <script>
-        let count = 0;
+  <script>
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    const rasenmaeher = document.getElementById('rasenmaeher');
 
-        function incrementCounter() {
-            count++;
-            document.getElementById('counter').innerText = `Anzahl der Kekse: ${count}`;
-        }
-    </script>
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    let x = window.innerWidth / 2;
+    let y = window.innerHeight / 2;
+    let winkel = 0; // In Grad
+    let faehrt = false;
+
+    function starten() {
+      if (faehrt) return;
+      faehrt = true;
+      zeichneSpur();
+    }
+
+    function drehen(richtung) {
+      winkel += richtung * 15;
+      rasenmaeher.style.transform = `translate(-50%, -50%) rotate(${winkel}deg)`;
+    }
+
+    function zeichneSpur() {
+      setInterval(() => {
+        if (!faehrt) return;
+
+        // Linie zeichnen
+        ctx.fillStyle = '#2e7d32'; // dunkleres Grün als Spur
+        ctx.beginPath();
+        ctx.arc(x, y, 5, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Neue Position berechnen
+        const rad = winkel * Math.PI / 180;
+        x += Math.cos(rad) * 2;
+        y += Math.sin(rad) * 2;
+
+        rasenmaeher.style.left = `${x}px`;
+        rasenmaeher.style.top = `${y}px`;
+      }, 20);
+    }
+  </script>
 </body>
 </html>
