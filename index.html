@@ -1,40 +1,99 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Keks Klicker</title>
+    <title>Rasenmäher-Spiel</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            margin: 0;
+            background-color: #8FBC8F; /* Grüne Wiese */
+        }
+        canvas {
+            display: block;
+            margin: 0 auto;
+            border: 1px solid black;
+        }
+        .controls {
             text-align: center;
-            margin-top: 50px;
+            margin-top: 10px;
         }
         button {
+            margin: 5px;
             padding: 10px 20px;
             font-size: 16px;
-            cursor: pointer;
-        }
-        #counter {
-            margin-top: 20px;
-            font-size: 50px;
-            color: #333;
-            front-weight: bold; 
         }
     </style>
 </head>
 <body>
-    <h1>Keks Klicker </h1>
-    <button onclick="incrementCounter()">Keks</button>
-    <div id="counter">Anzahl der Kekse: 0</div>
+    <canvas id="gameCanvas" width="600" height="400"></canvas>
+    <div class="controls">
+        <button id="leftButton">Links</button>
+        <button id="startButton">Start</button>
+        <button id="rightButton">Rechts</button>
+    </div>
 
     <script>
-        let count = 0;
+        const canvas = document.getElementById("gameCanvas");
+        const ctx = canvas.getContext("2d");
 
-        function incrementCounter() {
-            count++;
-            document.getElementById('counter').innerText = `Anzahl der Kekse: ${count}`;
+        let mower = {
+            x: 300,
+            y: 200,
+            width: 30,
+            height: 50,
+            direction: "straight",
+            mowing: false
+        };
+
+        function drawBackground() {
+            ctx.fillStyle = "#8FBC8F"; // Grasfarbe
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
         }
+
+        function drawMower() {
+            ctx.fillStyle = "#FF6347"; // Rasenmäherfarbe
+            ctx.fillRect(mower.x, mower.y, mower.width, mower.height);
+        }
+
+        function drawGrassTrail() {
+            ctx.fillStyle = "#6B8E23"; // Farbe der gemähten Spur
+            ctx.fillRect(mower.x, mower.y + mower.height / 2, mower.width, mower.height / 2);
+        }
+
+        function updateGame() {
+            if (mower.mowing) {
+                drawGrassTrail();
+                if (mower.direction === "left") {
+                    mower.x -= 2;
+                } else if (mower.direction === "right") {
+                    mower.x += 2;
+                } else {
+                    mower.y += 2;
+                }
+            }
+        }
+
+        document.getElementById("startButton").addEventListener("click", () => {
+            mower.mowing = true;
+        });
+
+        document.getElementById("leftButton").addEventListener("click", () => {
+            mower.direction = "left";
+        });
+
+        document.getElementById("rightButton").addEventListener("click", () => {
+            mower.direction = "right";
+        });
+
+        function gameLoop() {
+            drawBackground();
+            drawMower();
+            updateGame();
+            requestAnimationFrame(gameLoop);
+        }
+
+        gameLoop();
     </script>
 </body>
 </html>
