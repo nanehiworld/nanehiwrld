@@ -1,55 +1,67 @@
-<!DOCTYPE html>
-<html lang="en">
+!DOCTYPE html>
+<html lang="de">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <style>
-        .button {
-        
-            background-color: rgb(137, 107, 107);
-            border: none;
-            color: white;
-            padding: 50px 50px;
-            text-align: center;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 16px;
-            margin: 4px 2px;
-            cursor: pointer;
-            border-radius: 50%;
-            background-image: radial-gradient(black 30%, transparent 20%);
-            background-size: 20px 20px; 
-        }
-
-        body {
-            display: flex;
-            justify-content: center;
-            flex-direction: column;
-           align-items: center; 
-            height: 100vh; /* Vollbildhöhe */
-           
-        }
-   p {
-            font-size: 26px;
-            color: #333;
-        }
-        button:hover {
-            font-size: 20px;
-        }
-   </style>
+  <meta charset="UTF-8" />
+  <title>Populationsdiagramm</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-    <button class="button" onclick="incrementCounter()">keks</button>
-    <p id="counter">0 kekse</p>
+  <h1>Populationsentwicklung</h1>
+  <label for="r">Wert für r:</label>
+  <input type="number" id="r" step="0.01" value="2.5">
+  <label for="x0">Startwert x₀:</label>
+  <input type="number" id="x0" step="0.01" value="0.1">
+  <label for="steps">Anzahl Schritte:</label>
+  <input type="number" id="steps" value="50">
+  <button onclick="generateChart()">Diagramm erzeugen</button>
 
-    <script>
-        let count = 0; // Initialisiere den Counter
+  <canvas id="chart" width="800" height="400"></canvas>
 
-        function incrementCounter() {
-            count++; // Erhöhe den Counter um 1
-            document.getElementById('counter').innerText = `${count} Kekse`;
+  <script>
+    function generateChart() {
+      const r = parseFloat(document.getElementById("r").value);
+      let x = parseFloat(document.getElementById("x0").value);
+      const steps = parseInt(document.getElementById("steps").value);
+
+      const labels = [];
+      const data = [];
+
+      for (let n = 0; n <= steps; n++) {
+        labels.push(n);
+        data.push(x);
+        x = r * x - r * x * x; // rekursive Formel
+      }
+
+      const ctx = document.getElementById("chart").getContext("2d");
+
+      if (window.myChart) {
+        window.myChart.destroy();
+      }
+
+      window.myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: `r = ${r}`,
+            data: data,
+            borderColor: 'blue',
+            tension: 0.1
+          }]
+        },
+        options: {
+          responsive: true,
+          scales: {
+            x: {
+              title: { display: true, text: 'n (Zeitschritte)' }
+            },
+            y: {
+              title: { display: true, text: 'xₙ (Anzahl Tiere)' }
+            }
+          }
         }
-    </script>
+      });
+    }
+  </script>
 </body>
 </html>
